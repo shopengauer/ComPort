@@ -27,19 +27,17 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
     @FXML
     private Button btn;
+
     @Autowired
     private FXMLMainController mainController;
 
 
-    //
+
     @FXML
     void handleBtn(ActionEvent event) {
+       Stage stage = (Stage)view.getScene().getWindow();
+       stage.close();
 
-        Stage stage = (Stage)btn.getScene().getWindow();
-
-        stage.close();
-     //   Stage stage = (Stage)mainController.getView().getScene().getWindow();
-       // view.getScene().getWindow().hide();
 
     }
 

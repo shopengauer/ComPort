@@ -3,7 +3,12 @@ package com.vspavlov.comport.config.fxml;
 import com.vspavlov.comport.fxmlcontrollers.FXMLComPortConfigController;
 import com.vspavlov.comport.fxmlcontrollers.FXMLMainController;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +21,8 @@ import java.io.InputStream;
  */
 @Configuration
 public class FXMLControllersConfig {
+
+    private Logger logger = LoggerFactory.getLogger(FXMLMainController.class);
 
     @Bean
     @Qualifier(value = "fxmlMain")
@@ -39,6 +46,7 @@ public class FXMLControllersConfig {
             return loader.getController();
         }
     }
+
 
 //    @Bean
 //    @Qualifier(value = "comPortConfigStage")

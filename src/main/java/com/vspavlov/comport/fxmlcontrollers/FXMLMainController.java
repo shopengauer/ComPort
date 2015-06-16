@@ -1,5 +1,6 @@
 package com.vspavlov.comport.fxmlcontrollers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,39 +41,65 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
+    @Autowired
+    private Scene comPortConfigScene;
+
+
     @FXML
     private AnchorPane mainView;
 
     @FXML
+    private MenuItem closeMenuItem;
+
+    @FXML
     private MenuItem comPortsConfig;
+
+
+
+
+//    @PostConstruct
+//    private void init(){
+//        logger.info("Initilize port config scene");
+//        //scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
+//    }
+
+
 
 
     @FXML
     void handleComPortsConfig(ActionEvent event) {
 
 
-        Stage createComPortConfigStage =  new Stage(StageStyle.UNDECORATED);
-
-
-       // Scene scene = new Scene((Parent)fxmlComPortConfigController.getView(), 300, 300);
-
-        Group root = new Group();
-        Button btn = new Button("Close");
-        root.getChildren().add(btn);
-
-        Scene scene = new Scene(root, 300, 300, Color.BLACK);
-
-        createComPortConfigStage.setResizable(false);
-
+        Stage createComPortConfigStage =  new Stage(StageStyle.UTILITY);
+        createComPortConfigStage.setScene(comPortConfigScene);
+        createComPortConfigStage.setTitle("COM Port config");
+        createComPortConfigStage.show();
+//////////////////////////////////////////////////
+//        Group root = new Group();
+//        Button btn = new Button("Close");
+//        btn.setLayoutX(150);
+//        btn.setLayoutY(250);
+//
+//        btn.setOnAction(event1 -> {createComPortConfigStage.close();});
+//
+//        root.getChildren().add(btn);
+//
+//        Scene scene = new Scene(root, 500, 600, Color.WHITE);
+//
+//        createComPortConfigStage.setResizable(false);
+/////////////////////////////////////////////////////////////
 
         //  scene.getStylesheets().add("/styles/fxmlschema.css");
-        createComPortConfigStage.setScene(scene);
-        createComPortConfigStage.setTitle("Energymeter communication client");
-        createComPortConfigStage.show();
+
 
     }
 
+    @FXML
+    void handleCloseItem(ActionEvent event)
+    {
+        Platform.exit();
 
+    }
 
     public AnchorPane getView() {
         return mainView;
@@ -85,7 +113,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       logger.info("Initilize");
+        logger.info("Initilize port config scene");
 
     }
 
