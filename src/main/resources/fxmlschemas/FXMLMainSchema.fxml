@@ -8,33 +8,55 @@
    <children>
       <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Close" fx:id="closeMenuItem" onAction="#handleCloseItem"/>
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Config">
-                  <items>
-                    <MenuItem fx:id="comPortsConfig" mnemonicParsing="false" onAction="#handleComPortsConfig" text="Com Ports" />
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" text="View">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Logs" />
-                        <MenuItem mnemonicParsing="false" text="Meter client" />
-                    </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="Web">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="WebSocket" />
-                        <MenuItem mnemonicParsing="false" text="Web Service" />
-                    </items>
-                  </Menu>
-              </menus>
-            </MenuBar>
+            <VBox prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <MenuBar>
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#handleCloseItem" text="Close" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Config">
+                        <items>
+                          <MenuItem fx:id="comPortsConfig" mnemonicParsing="false" onAction="#handleComPortsConfig" text="Com Ports" />
+                        </items>
+                      </Menu>
+                        <Menu mnemonicParsing="false" text="View">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Logs" />
+                              <MenuItem mnemonicParsing="false" text="Meter client" />
+                          </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Web">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="WebSocket" />
+                              <MenuItem mnemonicParsing="false" text="Web Service" />
+                          </items>
+                        </Menu>
+                    </menus>
+                  </MenuBar>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                     <items>
+                        <Label text="Port:" />
+                        <ComboBox prefWidth="150.0" />
+                     </items>
+                  </ToolBar>
+               </children>
+            </VBox>
          </top>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <TabPane prefHeight="323.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                      <Tab text="COM4" />
+                      <Tab text="COM12" />
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </center>
       </BorderPane>
    </children>
 </AnchorPane>

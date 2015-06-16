@@ -37,13 +37,11 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private ApplicationEventPublisher eventPublisher;
     private Logger logger = LoggerFactory.getLogger(FXMLMainController.class);
 
-
+    private Scene scene;
 
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
-
-    private Scene scene;
 
 
     @FXML
@@ -61,7 +59,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @PostConstruct
     private void initM(){
         logger.info(Thread.currentThread().getName());
-         scene = null;
+        scene = null;
         // scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
 
     }
