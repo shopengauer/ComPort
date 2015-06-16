@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
@@ -41,8 +42,8 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
-    @Autowired
-    private Scene comPortConfigScene;
+
+    private Scene scene;
 
 
     @FXML
@@ -57,21 +58,26 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
 
 
-//    @PostConstruct
-//    private void init(){
-//        logger.info("Initilize port config scene");
-//        //scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
-//    }
+    @PostConstruct
+    private void initM(){
+        logger.info(Thread.currentThread().getName());
+         scene = null;
+        // scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
 
-
+    }
 
 
     @FXML
     void handleComPortsConfig(ActionEvent event) {
 
+       logger.info(Thread.currentThread().getName());
+      if(scene == null){
+          scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
+      }
+
 
         Stage createComPortConfigStage =  new Stage(StageStyle.UTILITY);
-        createComPortConfigStage.setScene(comPortConfigScene);
+        createComPortConfigStage.setScene(scene);
         createComPortConfigStage.setTitle("COM Port config");
         createComPortConfigStage.show();
 //////////////////////////////////////////////////
