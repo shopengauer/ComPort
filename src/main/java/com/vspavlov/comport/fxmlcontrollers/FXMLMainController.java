@@ -10,6 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -42,16 +44,27 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
-
+    @Autowired
+    private TabPane tabPane;
 
     @FXML
     private AnchorPane mainView;
+
+    @FXML
+    private AnchorPane tabPaneAnchor;
+
 
     @FXML
     private MenuItem closeMenuItem;
 
     @FXML
     private MenuItem comPortsConfig;
+
+    @FXML
+    private TabPane mainTabPain;
+
+    @FXML
+    private Button openPortBtn;
 
 
 
@@ -61,7 +74,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
         logger.info(Thread.currentThread().getName());
         scene = null;
         // scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
-
+        tabPaneAnchor.getChildren().add(tabPane);
     }
 
 
@@ -94,6 +107,19 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 /////////////////////////////////////////////////////////////
 
         //  scene.getStylesheets().add("/styles/fxmlschema.css");
+
+
+    }
+
+    @FXML
+    void handleOpenPortBtn(ActionEvent event) {
+
+
+        Tab tab = new Tab( String.valueOf(Math.random()));
+        // todo: close com port when tab closing
+        tab.setOnClosed(event1 -> {});
+        tabPane.getTabs().add(tab);
+
 
 
     }
