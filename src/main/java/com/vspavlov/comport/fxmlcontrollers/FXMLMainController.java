@@ -16,10 +16,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import jssc.SerialPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -54,9 +57,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     private AnchorPane mainView;
 
-    @FXML
-    private AnchorPane tabPaneAnchor;
-
+   
     @FXML
     private BorderPane borderPane;
 
@@ -149,10 +150,21 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     void handleOpenPortBtn(ActionEvent event) {
 
+       // SerialPort serialPort = new SerialPort();
+      //  List<SerialPort> serialPortList = SerialPort
 
-        Tab tab = new Tab( String.valueOf(Math.random()));
+
+       // Tab tab = new Tab( String.valueOf(Math.random()));
+        Tab tab = new Tab("COM12");
+
+        AnchorPane tabAnchor = new AnchorPane();
+
+        Pane pane  = new Pane();
+        pane.getChildren().add(new Button("Active"));
+        tabAnchor.getChildren().add(pane);
+        tab.setContent(tabAnchor);
         // todo: close com port when tab closing
-        tab.setOnClosed(event1 -> {});
+       // tab.setOnClosed(event1 -> {});
         tabPane.getTabs().add(tab);
 
 

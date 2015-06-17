@@ -47,7 +47,15 @@
             </VBox>
          </top>
          <center>
-            <TabPane fx:id="mainTabPain" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
+            <TabPane fx:id="mainTabPain" tabClosingPolicy="SELECTED_TAB" BorderPane.alignment="CENTER">
+               <tabs>
+                  <!--<Tab text="Untitled Tab">-->
+                    <!--<content>-->
+                      <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
+                    <!--</content>-->
+                  <!--</Tab>-->
+               </tabs>
+            </TabPane>
          </center>
       </BorderPane>
    </children>
