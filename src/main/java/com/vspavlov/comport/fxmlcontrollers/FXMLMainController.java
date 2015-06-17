@@ -2,6 +2,7 @@ package com.vspavlov.comport.fxmlcontrollers;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,8 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
@@ -67,13 +70,18 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private Button openPortBtn;
 
 
+    private double dragOffSetX;
+    private double dragOffSetY;
 
 
     @PostConstruct
     private void initM(){
         logger.info(Thread.currentThread().getName());
-        scene = null;
-        // scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
+
+       // Runnable createSceneTask = () -> scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
+        Platform.runLater(() ->
+                scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE));
+
         tabPaneAnchor.getChildren().add(tabPane);
     }
 
@@ -81,16 +89,37 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     void handleComPortsConfig(ActionEvent event) {
 
-       logger.info(Thread.currentThread().getName());
-      if(scene == null){
-          scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
-      }
+        logger.info(Thread.currentThread().getName());
+        Stage comPortConfigStage =  new Stage(StageStyle.UNDECORATED);
+        comPortConfigStage.initModality(Modality.APPLICATION_MODAL);
+        comPortConfigStage.setOpacity(0.8);
 
+//
+//        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                dragOffSetX = event.getScreenX() - comPortConfigStage.getX();
+//                dragOffSetY = event.getScreenY() - comPortConfigStage.getY();
+//            }
+//        });
 
-        Stage createComPortConfigStage =  new Stage(StageStyle.UTILITY);
-        createComPortConfigStage.setScene(scene);
-        createComPortConfigStage.setTitle("COM Port config");
-        createComPortConfigStage.show();
+        scene.setOnMousePressed((MouseEvent e) -> {
+           {
+                dragOffSetX = e.getScreenX() - comPortConfigStage.getX();
+                dragOffSetY = e.getScreenY() - comPortConfigStage.getY();
+            }
+        });
+
+        scene.setOnMouseDragged((MouseEvent e) -> {
+            {
+                comPortConfigStage.setX(e.getScreenX() - dragOffSetX);
+                comPortConfigStage.setY(e.getScreenY() - dragOffSetY);
+            }
+        });
+
+        comPortConfigStage.setScene(scene);
+        comPortConfigStage.setTitle("COM Port config");
+        comPortConfigStage.show();
 //////////////////////////////////////////////////
 //        Group root = new Group();
 //        Button btn = new Button("Close");

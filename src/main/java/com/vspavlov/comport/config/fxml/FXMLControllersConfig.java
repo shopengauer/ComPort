@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public class FXMLControllersConfig {
 
     @Bean
     @Qualifier(value = "fxmlComPortConfig")
+    //@Scope(value = "prototype")
     public FXMLComPortConfigController fxmlComPortConfigController() throws IOException {
         System.out.println("Load controller");
         return (FXMLComPortConfigController) loadController("/fxmlschemas/FXMLComPortConfigSchema.fxml");

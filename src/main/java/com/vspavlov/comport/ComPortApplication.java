@@ -39,7 +39,7 @@ public class ComPortApplication extends AbstractJavaFxApplicationSupport{
          Scene scene = new Scene((Parent)mainController.getView(), 1000, 700);
 
 
-
+       //   primaryStage.setFullScreen(true);
       //  primaryStage.setResizable(false);
 
 
