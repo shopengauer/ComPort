@@ -15,6 +15,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -47,14 +48,17 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
-    @Autowired
-    private TabPane tabPane;
+//    @Autowired
+//    private TabPane tabPane;
 
     @FXML
     private AnchorPane mainView;
 
     @FXML
     private AnchorPane tabPaneAnchor;
+
+    @FXML
+    private BorderPane borderPane;
 
 
     @FXML
@@ -73,6 +77,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private double dragOffSetX;
     private double dragOffSetY;
 
+   private TabPane tabPane;
 
     @PostConstruct
     private void initM(){
@@ -82,7 +87,8 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
         Platform.runLater(() ->
                 scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE));
 
-        tabPaneAnchor.getChildren().add(tabPane);
+      tabPane = (TabPane)borderPane.getCenter();
+       // tabPane.getChildren().add(tabPane);
     }
 
 

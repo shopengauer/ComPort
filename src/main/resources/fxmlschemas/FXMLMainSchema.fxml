@@ -6,7 +6,7 @@
 
 <AnchorPane fx:id="mainView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vspavlov.comport.fxmlcontrollers.FXMLMainController">
    <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane fx:id="borderPane" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
             <VBox prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
@@ -47,7 +47,7 @@
             </VBox>
          </top>
          <center>
-            <AnchorPane fx:id="tabPaneAnchor" BorderPane.alignment="CENTER" />
+            <TabPane fx:id="mainTabPain" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
    </children>
