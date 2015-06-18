@@ -1,6 +1,7 @@
 package com.vspavlov.comport.fxmlcontrollers;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -9,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -22,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jssc.SerialPort;
+import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,16 +50,18 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
 
-//    @Autowired
-//    private TabPane tabPane;
+    @Autowired
+    private TabPane beanTabPane;
 
     @FXML
     private AnchorPane mainView;
 
-   
+
     @FXML
     private BorderPane borderPane;
 
+    @FXML
+    private ComboBox<String> comPortNameCombo;
 
     @FXML
     private MenuItem closeMenuItem;
@@ -68,8 +69,8 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     private MenuItem comPortsConfig;
 
-    @FXML
-    private TabPane mainTabPain;
+//    @FXML
+//    private TabPane mainTabPain;
 
     @FXML
     private Button openPortBtn;
@@ -78,18 +79,25 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private double dragOffSetX;
     private double dragOffSetY;
 
-   private TabPane tabPane;
+   //private TabPane tabPane;
 
     @PostConstruct
     private void initM(){
         logger.info(Thread.currentThread().getName());
 
-       // Runnable createSceneTask = () -> scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE);
+        String[] serialPortList = SerialPortList.getPortNames();
+        for (String s : serialPortList) {
+            logger.info(s);
+        }
+
+        comPortNameCombo.getItems().addAll(serialPortList);
+
+
+        borderPane.setCenter(beanTabPane);
         Platform.runLater(() ->
                 scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE));
 
-      tabPane = (TabPane)borderPane.getCenter();
-       // tabPane.getChildren().add(tabPane);
+
     }
 
 
@@ -97,19 +105,13 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     void handleComPortsConfig(ActionEvent event) {
 
         logger.info(Thread.currentThread().getName());
-        Stage comPortConfigStage =  new Stage(StageStyle.UNDECORATED);
+        Stage comPortConfigStage =  new Stage(StageStyle.DECORATED);
         comPortConfigStage.initModality(Modality.APPLICATION_MODAL);
         comPortConfigStage.setOpacity(0.8);
 
-//
-//        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                dragOffSetX = event.getScreenX() - comPortConfigStage.getX();
-//                dragOffSetY = event.getScreenY() - comPortConfigStage.getY();
-//            }
-//        });
-
+        /**
+         *
+         */
         scene.setOnMousePressed((MouseEvent e) -> {
            {
                 dragOffSetX = e.getScreenX() - comPortConfigStage.getX();
@@ -127,23 +129,6 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
         comPortConfigStage.setScene(scene);
         comPortConfigStage.setTitle("COM Port config");
         comPortConfigStage.show();
-//////////////////////////////////////////////////
-//        Group root = new Group();
-//        Button btn = new Button("Close");
-//        btn.setLayoutX(150);
-//        btn.setLayoutY(250);
-//
-//        btn.setOnAction(event1 -> {createComPortConfigStage.close();});
-//
-//        root.getChildren().add(btn);
-//
-//        Scene scene = new Scene(root, 500, 600, Color.WHITE);
-//
-//        createComPortConfigStage.setResizable(false);
-/////////////////////////////////////////////////////////////
-
-        //  scene.getStylesheets().add("/styles/fxmlschema.css");
-
 
     }
 
@@ -156,17 +141,24 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
        // Tab tab = new Tab( String.valueOf(Math.random()));
         Tab tab = new Tab("COM12");
+        ObservableMap<Object, Object> tabProperties = tab.getProperties();
+
 
         AnchorPane tabAnchor = new AnchorPane();
 
         Pane pane  = new Pane();
-        pane.getChildren().add(new Button("Active"));
+        Button closeBtn = new Button("Close port");
+        closeBtn.setLayoutX(50);
+        closeBtn.setLayoutY(50);
+        // todo: продумать логику закрытия ком порта
+         closeBtn.setOnAction(e -> beanTabPane.getTabs().removeAll(tab));
+        pane.getChildren().add(closeBtn);
         tabAnchor.getChildren().add(pane);
         tab.setContent(tabAnchor);
         // todo: close com port when tab closing
        // tab.setOnClosed(event1 -> {});
-        tabPane.getTabs().add(tab);
-
+        //mainTabPain.getTabs().add(tab);
+         beanTabPane.getTabs().add(tab);
 
 
     }

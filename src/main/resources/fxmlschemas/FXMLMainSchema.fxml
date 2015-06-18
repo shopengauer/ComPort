@@ -39,7 +39,7 @@
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                      <items>
                         <Label text="Port:" />
-                        <ComboBox prefWidth="150.0" />
+                        <ComboBox fx:id="comPortNameCombo" prefWidth="150.0" />
                         <Button fx:id="openPortBtn" mnemonicParsing="false" onAction="#handleOpenPortBtn" text="Open" />
                      </items>
                   </ToolBar>
@@ -47,15 +47,11 @@
             </VBox>
          </top>
          <center>
-            <TabPane fx:id="mainTabPain" tabClosingPolicy="SELECTED_TAB" BorderPane.alignment="CENTER">
-               <tabs>
-                  <!--<Tab text="Untitled Tab">-->
-                    <!--<content>-->
-                      <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
-                    <!--</content>-->
-                  <!--</Tab>-->
-               </tabs>
-            </TabPane>
+            <!--<TabPane fx:id="mainTabPain" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">-->
+               <!--<tabs>-->
+
+               <!--</tabs>-->
+            <!--</TabPane>-->
          </center>
       </BorderPane>
    </children>
