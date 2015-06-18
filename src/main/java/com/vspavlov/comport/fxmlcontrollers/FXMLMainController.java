@@ -1,13 +1,13 @@
 package com.vspavlov.comport.fxmlcontrollers;
 
+import com.vspavlov.comport.serial.SerialPortProperties;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,17 +24,12 @@ import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by vasiliy on 15.06.15.
@@ -69,33 +64,29 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     private MenuItem comPortsConfig;
 
-//    @FXML
-//    private TabPane mainTabPain;
+    @FXML
+    private Button refreshComPorts;
 
     @FXML
     private Button openPortBtn;
 
+    @FXML
+    private Label infoLabel;
 
     private double dragOffSetX;
     private double dragOffSetY;
 
-   //private TabPane tabPane;
+    private ObservableMap<Object,Object> observableComPortMapProps;
 
     @PostConstruct
     private void initM(){
         logger.info(Thread.currentThread().getName());
 
-        String[] serialPortList = SerialPortList.getPortNames();
-        for (String s : serialPortList) {
-            logger.info(s);
-        }
-
-        comPortNameCombo.getItems().addAll(serialPortList);
-
+        setComPortsToCombo();
 
         borderPane.setCenter(beanTabPane);
         Platform.runLater(() ->
-                scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 700,Color.AQUAMARINE));
+                scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 500,Color.AQUAMARINE));
 
 
     }
@@ -104,31 +95,49 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     void handleComPortsConfig(ActionEvent event) {
 
+
+
         logger.info(Thread.currentThread().getName());
-        Stage comPortConfigStage =  new Stage(StageStyle.DECORATED);
-        comPortConfigStage.initModality(Modality.APPLICATION_MODAL);
-        comPortConfigStage.setOpacity(0.8);
 
-        /**
-         *
-         */
-        scene.setOnMousePressed((MouseEvent e) -> {
-           {
-                dragOffSetX = e.getScreenX() - comPortConfigStage.getX();
-                dragOffSetY = e.getScreenY() - comPortConfigStage.getY();
-            }
-        });
+        if (!isComPortSelect()){
+            infoLabel.setText("Please, select COM port!");
 
-        scene.setOnMouseDragged((MouseEvent e) -> {
-            {
-                comPortConfigStage.setX(e.getScreenX() - dragOffSetX);
-                comPortConfigStage.setY(e.getScreenY() - dragOffSetY);
-            }
-        });
+        }else{
+            Stage comPortConfigStage =  new Stage(StageStyle.UTILITY);
+            comPortConfigStage.initModality(Modality.APPLICATION_MODAL);
+            comPortConfigStage.setOpacity(1);
+            String selectedComPort = comPortNameCombo.getValue();
 
-        comPortConfigStage.setScene(scene);
-        comPortConfigStage.setTitle("COM Port config");
-        comPortConfigStage.show();
+            fxmlComPortConfigController.getComPortLabel().setText(selectedComPort + " port configuration");
+            SerialPortProperties serialPortProperties = (SerialPortProperties)observableComPortMapProps.get(selectedComPort);
+
+            fxmlComPortConfigController.getBaudRateCombo().setValue(Integer.toUnsignedString(serialPortProperties.getBaudRate()));
+            // todo Сделать заполнение остальных комбо боксов в кофиге компорта
+
+            /**
+             *
+             */
+            scene.setOnMousePressed((MouseEvent e) -> {
+                {
+                    dragOffSetX = e.getScreenX() - comPortConfigStage.getX();
+                    dragOffSetY = e.getScreenY() - comPortConfigStage.getY();
+                }
+            });
+
+            scene.setOnMouseDragged((MouseEvent e) -> {
+                {
+                    comPortConfigStage.setX(e.getScreenX() - dragOffSetX);
+                    comPortConfigStage.setY(e.getScreenY() - dragOffSetY);
+                }
+            });
+
+            comPortConfigStage.setScene(scene);
+            comPortConfigStage.setTitle("COM Port config");
+            comPortConfigStage.show();
+
+        }
+
+
 
     }
 
@@ -170,9 +179,48 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
     }
 
+    @FXML
+    void handleRefreshComPorts(ActionEvent event) {
+        infoLabel.setText("");
+        setComPortsToCombo();
+
+    }
+
     public AnchorPane getView() {
         return mainView;
     }
+
+    private void setComPortsToCombo(){
+        String[] serialPortArray = SerialPortList.getPortNames();
+        ObservableList<String> observableComPortslist = FXCollections.observableArrayList(Arrays.asList(serialPortArray));
+        comPortNameCombo.setItems(observableComPortslist);
+         // todo Продумать всю логику обновления свойств ком портов
+         // todo и сделать listener для combobox в конфигурации ком портов
+          //
+        comPortNameCombo.getProperties().clear();
+        observableComPortMapProps = comPortNameCombo.getProperties();
+
+
+        if(!observableComPortslist.isEmpty()) {
+            comPortNameCombo.setValue(observableComPortslist.get(0));
+
+            for (String s : serialPortArray) {
+                if(!observableComPortMapProps.containsKey(s)){
+                    SerialPort serialPort = new SerialPort(s);
+                    observableComPortMapProps.put(s,new SerialPortProperties(serialPort));
+                    infoLabel.setText(( String.valueOf(serialPort.isOpened())));
+                }
+            }
+        }
+
+
+    }
+
+
+    private boolean isComPortSelect(){
+       return (comPortNameCombo.getValue() != null);
+    }
+
 
 
     @Override
@@ -187,6 +235,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     }
 
 
-
-
+    public ObservableMap<Object, Object> getObservableComPortMapProps() {
+        return observableComPortMapProps;
+    }
 }

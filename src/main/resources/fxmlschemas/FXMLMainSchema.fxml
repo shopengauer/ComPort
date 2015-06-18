@@ -41,6 +41,8 @@
                         <Label text="Port:" />
                         <ComboBox fx:id="comPortNameCombo" prefWidth="150.0" />
                         <Button fx:id="openPortBtn" mnemonicParsing="false" onAction="#handleOpenPortBtn" text="Open" />
+                        <Button fx:id="refreshComPorts" mnemonicParsing="false" onAction="#handleRefreshComPorts" text="Refresh" />
+                        <Label fx:id="infoLabel" />
                      </items>
                   </ToolBar>
                </children>

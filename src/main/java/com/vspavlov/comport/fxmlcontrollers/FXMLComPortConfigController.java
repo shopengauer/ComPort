@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,25 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
     private AnchorPane view;
 
     @FXML
-    private Button btn;
+    private Button closeBtn;
+
+    @FXML
+    private Button resetBtn;
+
+    @FXML
+    private ComboBox<String> dataBitsCombo;
+
+    @FXML
+    private ComboBox<String> parityCombo;
+
+    @FXML
+    private Label comPortLabel;
+
+    @FXML
+    private ComboBox<String> baudRateCombo;
+
+    @FXML
+    private ComboBox<String> stopBitsCombo;
 
     @Autowired
     private FXMLMainController mainController;
@@ -34,13 +54,15 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
 
     @FXML
-    void handleBtn(ActionEvent event) {
+    void handleCloseBtn(ActionEvent event) {
        Stage stage = (Stage)view.getScene().getWindow();
        stage.close();
-
-
     }
 
+    @FXML
+    void handleResetBtn(ActionEvent event) {
+
+    }
 
 
 
@@ -56,5 +78,18 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
     public AnchorPane getView() {
         return view;
+    }
+
+    public Label getComPortLabel() {
+        return comPortLabel;
+    }
+
+
+    public ComboBox<String> getBaudRateCombo() {
+        return baudRateCombo;
+    }
+
+    public void setBaudRateCombo(ComboBox<String> baudRateCombo) {
+        this.baudRateCombo = baudRateCombo;
     }
 }
