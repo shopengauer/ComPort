@@ -5,25 +5,29 @@ package com.vspavlov.comport.serial;
  */
 import jssc.SerialPort;
 
+import java.util.Enumeration;
+
 import static jssc.SerialPort.*;
 public class SerialPortProperties {
 
     private int baudRate;
     private int databits;
-    private int stopbits;
+    private Stopbits stopbits;
     private int parity;
     private SerialPort serialPort;
 
     public SerialPortProperties(SerialPort serialPort) {
         this.serialPort = serialPort;
         baudRate = BAUDRATE_9600;
+
         databits = DATABITS_8;
-        stopbits = STOPBITS_1;
+      //  stopbits = STOPBITS_1;
+        stopbits = Stopbits.STOPBITS_1;
         parity = PARITY_NONE;
 
     }
 
-    public SerialPortProperties(int baudRate, int databits, int stopbits, int parity) {
+    public SerialPortProperties(int baudRate, int databits, Stopbits stopbits, int parity) {
         this.baudRate = baudRate;
         this.databits = databits;
         this.stopbits = stopbits;
@@ -46,11 +50,11 @@ public class SerialPortProperties {
         this.databits = databits;
     }
 
-    public int getStopbits() {
+    public Stopbits getStopbits() {
         return stopbits;
     }
 
-    public void setStopbits(int stopbits) {
+    public void setStopbits(Stopbits stopbits) {
         this.stopbits = stopbits;
     }
 

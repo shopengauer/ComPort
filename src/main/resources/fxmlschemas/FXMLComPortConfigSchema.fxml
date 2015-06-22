@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vspavlov.comport.fxmlcontrollers.FXMLComPortConfigController">
+<AnchorPane fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vspavlov.comport.fxmlcontrollers.FXMLComPortConfigController">
    <children>
       <BorderPane layoutY="7.0" prefHeight="700.0" prefWidth="500.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="7.0">
          <bottom>
@@ -17,25 +17,25 @@
                   <Button fx:id="closeBtn" mnemonicParsing="false" onAction="#handleCloseBtn" text="Close" />
                </items>
                <effect>
-                  <Bloom threshold="0.95" />
+                  <!--<Bloom threshold="0.95" />-->
                </effect>
             </ToolBar>
          </bottom>
          <top>
-            <Pane prefHeight="348.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+            <Pane prefHeight="348.0" prefWidth="409.0" BorderPane.alignment="CENTER">
                <children>
-                  <ComboBox fx:id="baudRateCombo" layoutX="166.0" layoutY="65.0" prefWidth="150.0" />
-                  <ComboBox fx:id="dataBitsCombo" layoutX="166.0" layoutY="105.0" prefWidth="150.0" />
-                  <Label layoutX="95.0" layoutY="70.0" text="Baudrate:" />
-                  <Label layoutX="97.0" layoutY="110.0" text="Databits:" />
-                  <ComboBox fx:id="stopBitsCombo" layoutX="166.0" layoutY="145.0" prefWidth="150.0" />
-                  <Label layoutX="97.0" layoutY="150.0" text="Stopbits:" />
-                  <ComboBox fx:id="parityCombo" layoutX="166.0" layoutY="185.0" prefWidth="150.0" />
-                  <Label layoutX="109.0" layoutY="190.0" text="Parity:" />
-                  <Label fx:id="comPortLabel" layoutX="182.0" layoutY="24.0" text="Label" />
+                  <ComboBox fx:id="baudRateCombo" layoutX="123.0" layoutY="78.0" prefWidth="150.0" />
+                  <ComboBox fx:id="dataBitsCombo" layoutX="123.0" layoutY="118.0" prefWidth="150.0" />
+                  <Label layoutX="52.0" layoutY="83.0" text="Baudrate:" />
+                  <Label layoutX="54.0" layoutY="123.0" text="Databits:" />
+                  <ComboBox fx:id="stopBitsCombo" layoutX="123.0" layoutY="158.0" prefWidth="150.0" />
+                  <Label layoutX="54.0" layoutY="163.0" text="Stopbits:" />
+                  <ComboBox fx:id="parityCombo" layoutX="123.0" layoutY="198.0" prefWidth="150.0" />
+                  <Label layoutX="66.0" layoutY="203.0" text="Parity:" />
+                  <Label fx:id="comPortLabel" layoutX="139.0" layoutY="37.0" text="Label" />
                </children>
                <effect>
-                  <Bloom threshold="0.91" />
+                  <!--<Bloom threshold="0.91" />-->
                </effect>
             </Pane>
          </top>

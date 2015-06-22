@@ -2,12 +2,19 @@ package com.vspavlov.comport.fxmlcontrollers;
 
 import com.vspavlov.comport.serial.SerialPortProperties;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -55,8 +62,17 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     private BorderPane borderPane;
 
+    /**
+     * Комбо бокс для выбора ком порта
+     */
+
     @FXML
     private ComboBox<String> comPortNameCombo;
+    /**
+     *  обьект Map для хранения свойств ком портов
+     *  ключ - String "Имя ком порта" значение - SerialPortProperties
+     */
+    private ObservableMap<Object,Object> observableComPortMapProps; //
 
     @FXML
     private MenuItem closeMenuItem;
@@ -76,26 +92,50 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private double dragOffSetX;
     private double dragOffSetY;
 
-    private ObservableMap<Object,Object> observableComPortMapProps;
+
 
     @PostConstruct
     private void initM(){
         logger.info(Thread.currentThread().getName());
+        this.setComPortsToCombo();
 
-        setComPortsToCombo();
+
+        /**
+         * Hover listener
+          */
+        comPortNameCombo.hoverProperty().addListener((observable, oldValue, newValue)
+                -> {
+            if (newValue) {
+                infoLabel.setText(comPortNameCombo.getValue());
+            } else {
+                infoLabel.setText("");
+            }
+        });
+
+        //comPortNameCombo.valueProperty().add
+
+        /**
+         * infoLabel and comport binding
+         */
+
+      //  infoLabel.textProperty().bind(comPortNameCombo.valueProperty());
+
+
+
+
+       // .bind(infoLabel.textProperty());
+
+     //   comPortNameCombo.valueProperty().addListener((observable, oldValue, newValue) -> infoLabel.setText(newValue));
 
         borderPane.setCenter(beanTabPane);
         Platform.runLater(() ->
-                scene = new Scene((Parent)fxmlComPortConfigController.getView(), 500, 500,Color.AQUAMARINE));
-
+                scene = new Scene((Parent) fxmlComPortConfigController.getView(), 350, 500, Color.AQUAMARINE));
 
     }
 
 
     @FXML
     void handleComPortsConfig(ActionEvent event) {
-
-
 
         logger.info(Thread.currentThread().getName());
 
@@ -108,10 +148,23 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
             comPortConfigStage.setOpacity(1);
             String selectedComPort = comPortNameCombo.getValue();
 
-            fxmlComPortConfigController.getComPortLabel().setText(selectedComPort + " port configuration");
-            SerialPortProperties serialPortProperties = (SerialPortProperties)observableComPortMapProps.get(selectedComPort);
+            // todo save data about com port in label properties
+            fxmlComPortConfigController.getComPortLabel().getProperties().put("com", selectedComPort);
+           // fxmlComPortConfigController.getComPortLabel().setText(selectedComPort + " port configuration");
 
-            fxmlComPortConfigController.getBaudRateCombo().setValue(Integer.toUnsignedString(serialPortProperties.getBaudRate()));
+             SerialPortProperties serialPortProperties = (SerialPortProperties)observableComPortMapProps.get(selectedComPort);
+
+//            ObservableList<Integer> olBaudRate = FXCollections.observableArrayList();
+//            olBaudRate.addAll(SerialPort.BAUDRATE_1200, SerialPort.BAUDRATE_4800,
+//                    SerialPort.BAUDRATE_9600, SerialPort.BAUDRATE_14400, SerialPort.BAUDRATE_19200);
+//
+//            fxmlComPortConfigController.getBaudRateCombo().setItems(olBaudRate);
+
+             fxmlComPortConfigController.getBaudRateCombo().setValue(serialPortProperties.getBaudRate());
+             fxmlComPortConfigController.getDataBitsCombo().setValue( serialPortProperties.getDatabits() );
+            // fxmlComPortConfigController.getStopBitsCombo().setValue(Integer.toUnsignedString(serialPortProperties.getStopbits()));
+             fxmlComPortConfigController.getStopBitsCombo().setValue(serialPortProperties.getStopbits().getLabel());
+
             // todo Сделать заполнение остальных комбо боксов в кофиге компорта
 
             /**
@@ -130,9 +183,9 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
                     comPortConfigStage.setY(e.getScreenY() - dragOffSetY);
                 }
             });
-
+            comPortConfigStage.setResizable(false);
             comPortConfigStage.setScene(scene);
-            comPortConfigStage.setTitle("COM Port config");
+            comPortConfigStage.setTitle(selectedComPort + " Port config");
             comPortConfigStage.show();
 
         }
@@ -181,7 +234,7 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
     @FXML
     void handleRefreshComPorts(ActionEvent event) {
-        infoLabel.setText("");
+      //  infoLabel.setText("");
         setComPortsToCombo();
 
     }
@@ -191,28 +244,56 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     }
 
     private void setComPortsToCombo(){
+        /**
+         * Get existing com ports
+         */
         String[] serialPortArray = SerialPortList.getPortNames();
         ObservableList<String> observableComPortslist = FXCollections.observableArrayList(Arrays.asList(serialPortArray));
         comPortNameCombo.setItems(observableComPortslist);
-         // todo Продумать всю логику обновления свойств ком портов
-         // todo и сделать listener для combobox в конфигурации ком портов
-          //
-        comPortNameCombo.getProperties().clear();
-        observableComPortMapProps = comPortNameCombo.getProperties();
 
-
+        /**
+         * If non zero com ports found
+         */
         if(!observableComPortslist.isEmpty()) {
+            /**
+             * Get comPortComboBox property and clear then
+             */
+            observableComPortMapProps = comPortNameCombo.getProperties();
+            comPortNameCombo.getProperties().clear();
+            /**
+             * Set first element in observableComPortslist in com
+             * port combobox
+             */
             comPortNameCombo.setValue(observableComPortslist.get(0));
 
-            for (String s : serialPortArray) {
-                if(!observableComPortMapProps.containsKey(s)){
-                    SerialPort serialPort = new SerialPort(s);
-                    observableComPortMapProps.put(s,new SerialPortProperties(serialPort));
-                    infoLabel.setText(( String.valueOf(serialPort.isOpened())));
-                }
+            /**
+             * Set default properties value to founded com ports
+             */
+            for (String s : serialPortArray) {  // iteration over all serial ports
+                if(!observableComPortMapProps.containsKey(s)){ // if this com port has not config
+                    SerialPort serialPort = new SerialPort(s); //
+                    observableComPortMapProps.put(s, new SerialPortProperties(serialPort));
+                  }
             }
+
+            /**
+             * Print set of properties
+             */
+            Set<Object> keStringSet =  observableComPortMapProps.keySet();
+            for (Object o : keStringSet) {
+                //logger.info((String)o);
+                SerialPortProperties spp = (SerialPortProperties)observableComPortMapProps.get(o);
+                logger.info("{} Baudrate: {}, Databits: {}, Stopbits: {}, Parity: {}", (String)o ,spp.getBaudRate(),spp.getDatabits(),spp.getStopbits(),spp.getParity());
+            }
+
+
         }
 
+
+
+         // todo Продумать всю логику обновления свойств ком портов
+         // todo и сделать listener для combobox в конфигурации ком портов
+        //
 
     }
 
