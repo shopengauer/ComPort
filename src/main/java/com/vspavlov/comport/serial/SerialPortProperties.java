@@ -6,47 +6,44 @@ package com.vspavlov.comport.serial;
 import jssc.SerialPort;
 
 import java.util.Enumeration;
-
 import static jssc.SerialPort.*;
+
 public class SerialPortProperties {
 
-    private int baudRate;
-    private int databits;
+    private Baudrate baudRate;
+    private Databits databits;
     private Stopbits stopbits;
-    private int parity;
+    private Parity parity;
     private SerialPort serialPort;
 
     public SerialPortProperties(SerialPort serialPort) {
         this.serialPort = serialPort;
-        baudRate = BAUDRATE_9600;
-
-        databits = DATABITS_8;
-      //  stopbits = STOPBITS_1;
+        baudRate = Baudrate.BAUDRATE_9600;
+        databits = Databits.DATABITS_8;
         stopbits = Stopbits.STOPBITS_1;
-        parity = PARITY_NONE;
-
+        parity = Parity.PARITY_NONE;
     }
 
-    public SerialPortProperties(int baudRate, int databits, Stopbits stopbits, int parity) {
+    public SerialPortProperties(SerialPort serialPort,Baudrate baudRate, Databits databits, Stopbits stopbits, Parity parity) {
         this.baudRate = baudRate;
         this.databits = databits;
         this.stopbits = stopbits;
         this.parity = parity;
     }
 
-    public int getBaudRate() {
+    public Baudrate getBaudRate() {
         return baudRate;
     }
 
-    public void setBaudRate(int baudRate) {
+    public void setBaudRate(Baudrate baudRate) {
         this.baudRate = baudRate;
     }
 
-    public int getDatabits() {
+    public Databits getDatabits() {
         return databits;
     }
 
-    public void setDatabits(int databits) {
+    public void setDatabits(Databits databits) {
         this.databits = databits;
     }
 
@@ -58,15 +55,19 @@ public class SerialPortProperties {
         this.stopbits = stopbits;
     }
 
-    public int getParity() {
+    public Parity getParity() {
         return parity;
     }
 
-    public void setParity(int parity) {
+    public void setParity(Parity parity) {
         this.parity = parity;
     }
 
     public SerialPort getSerialPort() {
         return serialPort;
+    }
+
+    public void setSerialPort(SerialPort serialPort) {
+        this.serialPort = serialPort;
     }
 }

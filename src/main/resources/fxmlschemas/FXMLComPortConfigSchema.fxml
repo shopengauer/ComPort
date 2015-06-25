@@ -12,13 +12,13 @@
          <bottom>
             <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <items>
-                  <Button mnemonicParsing="false" text="Save" />
+                  <Button mnemonicParsing="false" text="Set" onAction="#handleSetBtn"/>
                   <Button fx:id="resetBtn" mnemonicParsing="false" onAction="#handleResetBtn" text="Reset to default value" />
                   <Button fx:id="closeBtn" mnemonicParsing="false" onAction="#handleCloseBtn" text="Close" />
                </items>
-               <effect>
-                  <!--<Bloom threshold="0.95" />-->
-               </effect>
+               <!--<effect>-->
+                  <!--&lt;!&ndash;<Bloom threshold="0.95" />&ndash;&gt;-->
+               <!--</effect>-->
             </ToolBar>
          </bottom>
          <top>
@@ -34,9 +34,9 @@
                   <Label layoutX="66.0" layoutY="203.0" text="Parity:" />
                   <Label fx:id="comPortLabel" layoutX="139.0" layoutY="37.0" text="Label" />
                </children>
-               <effect>
-                  <!--<Bloom threshold="0.91" />-->
-               </effect>
+               <!--<effect>-->
+                  <!--&lt;!&ndash;<Bloom threshold="0.91" />&ndash;&gt;-->
+               <!--</effect>-->
             </Pane>
          </top>
       </BorderPane>

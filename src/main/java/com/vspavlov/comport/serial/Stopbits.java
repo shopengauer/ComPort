@@ -34,6 +34,17 @@ public enum Stopbits {
                  return s.getIntValue();
              }
         }
-       return 0;
+       return 1;
+    }
+
+    public static Stopbits getStopbitsByLabel(String label){
+
+      Stopbits[] values = Stopbits.values();
+        for (Stopbits s : values) {
+             if(label.equals(s.getLabel())){
+                 return s;
+             }
+        }
+       return STOPBITS_1;
     }
 }

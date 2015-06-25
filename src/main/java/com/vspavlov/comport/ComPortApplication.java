@@ -36,7 +36,7 @@ public class ComPortApplication extends AbstractJavaFxApplicationSupport{
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-         Scene scene = new Scene((Parent)mainController.getView(), 1000, 700);
+        Scene scene = new Scene((Parent)mainController.getView(), 1000, 700);
 
 
        //   primaryStage.setFullScreen(true);

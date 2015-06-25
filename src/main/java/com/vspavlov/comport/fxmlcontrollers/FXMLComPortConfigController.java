@@ -1,6 +1,6 @@
 package com.vspavlov.comport.fxmlcontrollers;
 
-import com.vspavlov.comport.serial.Stopbits;
+import com.vspavlov.comport.serial.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -37,9 +37,9 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
 
     @FXML
-    private ComboBox<Integer> baudRateCombo;
+    private ComboBox<String> baudRateCombo;
     @FXML
-    private ComboBox<Integer> dataBitsCombo;
+    private ComboBox<String> dataBitsCombo;
     @FXML
     private ComboBox<String> stopBitsCombo;
     @FXML
@@ -56,7 +56,7 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
 
     @Autowired
-    private FXMLMainController mainController;
+    private FXMLMainController fxmlMainController;
 
     private ObservableMap<Object,Object> observableComPortMapProps;
 
@@ -74,7 +74,25 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
        // comPortLabel.setText((String) comPortLabel.getProperties().get("com"));
     }
 
+    @FXML
+    void handleSetBtn(ActionEvent event) {
+        /**
+         * Set new value to the comport properties
+         */
+        ObservableMap<Object,Object> observableComPortMapProps =  fxmlMainController.getObservableComPortMapProps();
+        String selectedComPort =  (String)getComPortLabel().getProperties().get("selectedComPort");
 
+        Baudrate newBaudrate = Baudrate.getBaudrateByLabel(baudRateCombo.getValue());
+        Databits newDatabits = Databits.getDatabitsByLabel(dataBitsCombo.getValue());
+        Stopbits newStopbits = Stopbits.getStopbitsByLabel(stopBitsCombo.getValue());
+        Parity newParity = Parity.getParityByLabel(parityCombo.getValue());
+        SerialPortProperties newSerialPortProperties =
+                new SerialPortProperties(new SerialPort(selectedComPort),newBaudrate,newDatabits,newStopbits,newParity);
+        observableComPortMapProps.replace(selectedComPort,newSerialPortProperties);
+
+        // System.out.println((String) comPortLabel.getProperties().get("com"));
+        // comPortLabel.setText((String) comPortLabel.getProperties().get("com"));
+    }
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -83,28 +101,42 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
 
     @PostConstruct
     private void init(){
-        ObservableList<Integer> olBaudRate = FXCollections.observableArrayList();
+        /**
+         * Init comport config comboboxes
+         */
 
-
-        olBaudRate.addAll(SerialPort.BAUDRATE_1200, SerialPort.BAUDRATE_4800,
-                SerialPort.BAUDRATE_9600, SerialPort.BAUDRATE_14400, SerialPort.BAUDRATE_19200);
+        ObservableList<String> olBaudRate = FXCollections.observableArrayList();
+        olBaudRate.addAll(Baudrate.BAUDRATE_1200.getLabel(),
+                Baudrate.BAUDRATE_4800.getLabel(),
+                Baudrate.BAUDRATE_9600.getLabel(),
+                Baudrate.BAUDRATE_14400.getLabel(),
+                Baudrate.BAUDRATE_19200.getLabel());
         baudRateCombo.setItems(olBaudRate);
 
-        ObservableList<Integer> olDatabits = FXCollections.observableArrayList();
-        olDatabits.addAll(SerialPort.DATABITS_5,SerialPort.DATABITS_6,
-                SerialPort.DATABITS_7,SerialPort.DATABITS_8);
+        ObservableList<String> olDatabits = FXCollections.observableArrayList();
+        olDatabits.addAll(Databits.DATABITS_5.getLabel(),
+                Databits.DATABITS_6.getLabel(),
+                Databits.DATABITS_7.getLabel(),
+                Databits.DATABITS_8.getLabel());
         dataBitsCombo.setItems(olDatabits);
 
-//        ObservableList<Integer> olStopbits = FXCollections.observableArrayList();
-//        olStopbits.addAll(SerialPort.STOPBITS_1,SerialPort.STOPBITS_1_5,
-//                SerialPort.STOPBITS_2);
-//        stopBitsCombo.setItems(olStopbits);
- ObservableList<String> olStopbits = FXCollections.observableArrayList();
-        olStopbits.addAll(Stopbits.STOPBITS_1.getLabel(),Stopbits.STOPBITS_1_5.getLabel(),
-                Stopbits.STOPBITS_2.getLabel());
+        ObservableList<String> olStopbits = FXCollections.observableArrayList();
+        olStopbits.addAll(Stopbits.STOPBITS_1.getLabel(),
+                          Stopbits.STOPBITS_1_5.getLabel(),
+                          Stopbits.STOPBITS_2.getLabel());
         stopBitsCombo.setItems(olStopbits);
 
-     logger.error("Stopbits {}",Stopbits.getValueByLabel("2"));
+        ObservableList<String> olParity = FXCollections.observableArrayList();
+        olParity.addAll(Parity.PARITY_NONE.getLabel(),
+                Parity.PARITY_ODD.getLabel(),
+                Parity.PARITY_SPACE.getLabel(),
+                Parity.PARITY_MARK.getLabel(),
+                Parity.PARITY_EVEN.getLabel());
+        parityCombo.setItems(olParity);
+
+
+       // parityCombo;
+     logger.error("Stopbits {}", Stopbits.getValueByLabel("2"));
 
     }
 
@@ -122,16 +154,15 @@ public class FXMLComPortConfigController implements Initializable,ApplicationEve
         return comPortLabel;
     }
 
-
-    public ComboBox<Integer> getBaudRateCombo() {
+    public ComboBox<String> getBaudRateCombo() {
         return baudRateCombo;
     }
 
-    public void setBaudRateCombo(ComboBox<Integer> baudRateCombo) {
+    public void setBaudRateCombo(ComboBox<String> baudRateCombo) {
         this.baudRateCombo = baudRateCombo;
     }
 
-    public ComboBox<Integer> getDataBitsCombo() {
+    public ComboBox<String> getDataBitsCombo() {
         return dataBitsCombo;
     }
 
