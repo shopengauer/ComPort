@@ -26,15 +26,18 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import jssc.SerialPort;
 import jssc.SerialPortList;
+import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Created by vasiliy on 15.06.15.
@@ -49,6 +52,8 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
     @Autowired
     private FXMLComPortConfigController fxmlComPortConfigController;
+
+
 
     @Autowired
     private TabPane beanTabPane;
@@ -96,70 +101,95 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     private double dragOffSetX;
     private double dragOffSetY;
 
+    @Autowired
+    private FXMLTabController fxmlTabController;
 
 
     @PostConstruct
     private void initM(){
-        logger.info(Thread.currentThread().getName());
-        observableActualComPortSet = FXCollections.observableSet();
-        observableComPortMapProps = comPortNameCombo.getProperties();
-       // observableActualComPortSet.addListener((SetChangeListener.Change<? extends String> c) -> {});
 
+        /**
+         * Initializing of Set for storing actual list of com ports
+         */
+        observableActualComPortSet = FXCollections.observableSet();
+        logger.info("Initialization of object for storage set of com ports {}", observableActualComPortSet);
+
+        /**
+         * Initializing Map for storing properties of com ports
+         */
+        observableComPortMapProps = comPortNameCombo.getProperties();
+
+        /**
+         * Set listener for adding and removing com ports to combo box
+          */
         observableActualComPortSet.addListener(new SetChangeListener<String>() {
             @Override
             public void onChanged(Change<? extends String> change) {
                 if (change.wasAdded()) {
+                    /**
+                     *  Com port for add
+                     */
                     String wasAddedComPort = change.getElementAdded();
-                    SerialPortProperties serialPortProperties = new SerialPortProperties(new SerialPort(wasAddedComPort));
-                    observableComPortMapProps.put(wasAddedComPort,serialPortProperties);
 
+                    /**
+                     * Default initialization for added com port
+                     */
+                    SerialPortProperties serialPortProperties = new SerialPortProperties(new SerialPort(wasAddedComPort));
+
+                    /**
+                     * Save SerialPortProperties in comPortNameCombo properties map
+                     */
+                    observableComPortMapProps.put(wasAddedComPort, serialPortProperties);
+
+                    /**
+                     * Add founded com port to combo box list
+                     */
                     comPortNameCombo.getItems().add(wasAddedComPort);
+
+
+                    /**
+                     * Set current comport value in combo box list
+                     */
                     comPortNameCombo.setValue(comPortNameCombo.getItems().get(0));
+
                     logger.info("Element {} was added", change.getElementAdded());
                 }
                 if (change.wasRemoved()) {
+                    /**
+                     * Com port to remove
+                     */
                     String wasRemovedComPort = change.getElementRemoved();
 
+
+                    /**
+                     * Remove com port from comPortComboBox Map properties
+                     */
                     observableComPortMapProps.remove(wasRemovedComPort);
 
+
+                    /**
+                     * Remove com port item from comPortNameCombo list
+                     */
                     comPortNameCombo.getItems().remove(wasRemovedComPort);
+
+
+                    /**
+                     * If comPortNameCombo is not empty set current com port value in combo box
+                     */
                     if (!comPortNameCombo.getItems().isEmpty()) {
                         comPortNameCombo.setValue(comPortNameCombo.getItems().get(0));
                     }
+
                     logger.info("Element {} was removed", change.getElementRemoved());
                 }
 
             }
         });
 
-        this.setComPortsToCombo();
-//
         /**
-         * Hover listener
-          */
-//        comPortNameCombo.hoverProperty().addListener((observable, oldValue, newValue)
-//                -> {
-//            if (newValue) {
-//                infoLabel.setText(comPortNameCombo.getValue());
-//            } else {
-//                infoLabel.setText("");
-//            }
-//        });
-
-        //comPortNameCombo.valueProperty().add
-
-        /**
-         * infoLabel and comport binding
+         * Init comPortComboBox
          */
-
-      //  infoLabel.textProperty().bind(comPortNameCombo.valueProperty());
-
-
-
-
-       // .bind(infoLabel.textProperty());
-
-     //   comPortNameCombo.valueProperty().addListener((observable, oldValue, newValue) -> infoLabel.setText(newValue));
+        this.setComPortsToCombo();
 
         borderPane.setCenter(beanTabPane);
         Platform.runLater(() ->
@@ -230,30 +260,45 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     @FXML
     void handleOpenPortBtn(ActionEvent event) {
 
-       // SerialPort serialPort = new SerialPort();
-      //  List<SerialPort> serialPortList = SerialPort
 
 
-       // Tab tab = new Tab( String.valueOf(Math.random()));
-        Tab tab = new Tab("COM12");
-        ObservableMap<Object, Object> tabProperties = tab.getProperties();
+        String comPortName = comPortNameCombo.getValue();
 
 
-        AnchorPane tabAnchor = new AnchorPane();
 
-        Pane pane  = new Pane();
-        Button closeBtn = new Button("Close port");
-        closeBtn.setLayoutX(50);
-        closeBtn.setLayoutY(50);
-        // todo: продумать логику закрытия ком порта
-         closeBtn.setOnAction(e -> beanTabPane.getTabs().removeAll(tab));
-        pane.getChildren().add(closeBtn);
-        tabAnchor.getChildren().add(pane);
-        tab.setContent(tabAnchor);
-        // todo: close com port when tab closing
-       // tab.setOnClosed(event1 -> {});
-        //mainTabPain.getTabs().add(tab);
-         beanTabPane.getTabs().add(tab);
+        if(comPortName == null) {
+
+            Tab tab = new Tab(comPortNameCombo.getValue());
+            ObservableMap<Object, Object> tabProperties = tab.getProperties();
+            AnchorPane tabAnchor = new AnchorPane();
+
+            Pane pane  = new Pane();
+            Button closeBtn = new Button("Close port");
+            closeBtn.setLayoutX(50);
+            closeBtn.setLayoutY(50);
+            // todo: продумать логику закрытия ком порта
+            closeBtn.setOnAction(e -> beanTabPane.getTabs().removeAll(tab));
+            pane.getChildren().add(closeBtn);
+          //  pane.getChildren().addAll(new TextArea());
+
+            tabAnchor.getChildren().add(pane);
+            tab.setContent(tabAnchor);
+            // todo: close com port when tab closing
+            // tab.setOnClosed(event1 -> {});
+            //mainTabPain.getTabs().add(tab);
+            beanTabPane.getTabs().add(tab);
+
+        } else {
+            infoLabel.setText("Com port was not selected!");
+        }
+
+
+         //Tab tab = fxmlTabController.getTab();
+        //  beanTabPane.getTabs().filtered(tab1 -> tab1.getText().equals())
+
+
+
+
 
 
     }
@@ -267,8 +312,8 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
 
     @FXML
     void handleRefreshComPorts(ActionEvent event) {
-         infoLabel.setText("");
-        setComPortsToCombo();
+        infoLabel.setText("");
+        this.setComPortsToCombo();
 
     }
 
@@ -277,68 +322,40 @@ public class FXMLMainController implements Initializable,ApplicationEventPublish
     }
 
     private void setComPortsToCombo(){
+
         /**
          * Get existing com ports
          */
-
         ObservableSet<String> comPortSet = FXCollections.observableSet(SerialPortList.getPortNames());
 
-        //comPortSet.stream().distinct().
-
+        /**
+         *  If observableActualComPortSet not contain founded com ports in comPortSet,
+         *  remove one from the observableActualComPortSet
+         *  This is done for retain current configs of com ports. Com
+         */
         for (String s : observableActualComPortSet) {
-              if(!comPortSet.contains(s)){
-                  observableActualComPortSet.remove(s);
-              }
+            if(!comPortSet.contains(s)){
+                observableActualComPortSet.remove(s);
+            }
+
         }
+       // observableActualComPortSet.clear();
+      //  observableActualComPortSet.
 
-        observableActualComPortSet.addAll(comPortSet);
-
-
-
-//
-//        /**
-//         * If non zero com ports found
-//         */
-//        if(!freshComPortslist.isEmpty()) {
-//            /**
-//             * Get comPortComboBox property and clear then
-//             */
-//            observableComPortMapProps = comPortNameCombo.getProperties();
-//            comPortNameCombo.getProperties().clear();
-//            /**
-//             * Set first element in observableComPortslist in com
-//             * port combobox
-//             */
-//            comPortNameCombo.setValue(freshComPortslist.get(0));
-//            infoLabel.setText("");
-//            /**
-//             * Set default properties value to founded com ports
-//             */
-//            for (String s : serialPortArray) {  // iteration over all serial ports
-//                if(!observableComPortMapProps.containsKey(s)){ // if this com port has not config
-//                    SerialPort serialPort = new SerialPort(s); //
-//                    observableComPortMapProps.put(s, new SerialPortProperties(serialPort));
-//                  }
+//        observableActualComPortSet.stream().noneMatch(new Predicate<String>() {
+//            @Override
+//            public boolean test(String s) {
+//                return comPortSet.contains(s);
 //            }
-//
-//            /**
-//             * Print set of properties
-//             */
-//            Set<Object> keStringSet =  observableComPortMapProps.keySet();
-//            for (Object o : keStringSet) {
-//                //logger.info((String)o);
-//                SerialPortProperties spp = (SerialPortProperties)observableComPortMapProps.get(o);
-//                logger.info("{} Baudrate: {}, Databits: {}, Stopbits: {}, Parity: {}", (String)o ,spp.getBaudRate(),spp.getDatabits(),spp.getStopbits(),spp.getParity());
-//            }
-//
-//
-//        }
-//
-//
+//        });
 
-         // todo Продумать всю логику обновления свойств ком портов
-         // todo и сделать listener для combobox в конфигурации ком портов
-        //
+      //  observableActualComPortSet.stream().filter(s -> comPortSet.contains(s));//.collect();
+
+        /**
+         * And then add comPortSet to actual Comport Set(add only if comport not already exist)
+         */
+         observableActualComPortSet.addAll(comPortSet);
+
 
     }
 

@@ -2,6 +2,7 @@ package com.vspavlov.comport.config.fxml;
 
 import com.vspavlov.comport.fxmlcontrollers.FXMLComPortConfigController;
 import com.vspavlov.comport.fxmlcontrollers.FXMLMainController;
+import com.vspavlov.comport.fxmlcontrollers.FXMLTabController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,7 +30,8 @@ public class FXMLControllersConfig {
     @Qualifier(value = "fxmlMain")
     public FXMLMainController fxmlController() throws IOException {
         System.out.println("Load controller");
-        return (FXMLMainController) loadController("/fxmlschemas/FXMLMainSchema.fxml");
+         return (FXMLMainController) loadController("/fxmlschemas/FXMLMainSchema.fxml");
+
     }
 
     @Bean
@@ -38,6 +40,12 @@ public class FXMLControllersConfig {
     public FXMLComPortConfigController fxmlComPortConfigController() throws IOException {
         System.out.println("Load controller");
         return (FXMLComPortConfigController) loadController("/fxmlschemas/FXMLComPortConfigSchema.fxml");
+    }
+
+    @Bean
+    public FXMLTabController fxmlTabController() throws IOException {
+
+        return (FXMLTabController) loadController("/fxmlschemas/FX.fxml");
     }
 
     protected Object loadController(String url) throws IOException {
